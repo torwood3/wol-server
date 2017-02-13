@@ -6,34 +6,39 @@
 var ping = require ("ping");
 var wol = require('wake_on_lan');
 var request = require('superagent');
+var Datastore = require('nedb')
+	, db = new Datastore({ filename: 'data/production', autoload: true });
 
 var devices = function (req, res, next) {
-	db.Device.findAll().then(function (devices) {
+	console.log("Get All devices");
+	db.find({}, function (err, devices) {
+		if(err) 			res.status(500);
+
 		console.log(devices);
-		res.status(200).json({devices: devices});
+		res.json({devices: devices});
 	})
-		.catch(function (error) {
-			res.status(500).json(error);
-		});
 }
 
 var deviceOn =  function(req, res) {
-	db.Device.findById(req.params.id).then(function (device) {
+	console.log("Get on device : " + req.params.id);
+	db.find({_id: req.params.id}, function (err, device) {
+		if(err) 			res.status(500);
+
 		wol.wake(device.mac, function (error) {
 			if (error) {
-				res.status(200).json({error: "Magic paquet error"});
+				res.json({error: "Magic paquet error"});
 			} else {
 				res.end();
 			}
 		});
 	})
-		.catch(function (error) {
-			res.status(500).json(error);
-		});
 }
 
 var deviceOff =  function(req, res) {
-	db.Device.findById(req.params.id).then(function (device) {
+	console.log("Get off device : " + req.params.id);
+	db.find({_id: req.params.id},function (err, device) {
+		if(err) 			res.status(500);
+
 		var port = device.port || 3000;
 		request
 			.get('http://' + device.ip +':'+ port +'/api/poweroff')
@@ -55,26 +60,45 @@ var deviceOff =  function(req, res) {
 
 			});
 	})
-		.catch(function (error) {
-			res.status(500).json(error);
-		});
 }
 
 var devicePing =  function(req, res) {
-	db.Device.findById(req.params.id).then(function (device) {
+	db.find({_id: req.params.id}, function (err, device) {
+		if(err) 			res.status(500);
+
 		ping.promise.probe(device.ip).then(function (result) {
-			console.log(result);
-			res.status(200).json({isAlive: result.alive.toString()});
+			db.update({ _id: req.params.id }, { $set: { status: result.alive.toString()} }, function (err, numReplaced) {
+				if(err) 			res.status(500);
+				res.json({isAlive: result.alive.toString()});
+			});
 		});
 	})
-		.catch(function (error) {
-			res.status(500).json(error);
-		});;
+}
+
+var deleteDevice = function(req, res) {
+	db.remove({_id: req.params.id}, function (err, numRemoved) {
+		if(err) 			res.status(500);
+		res.json({numDeleted: numRemoved});
+	})
+}
+
+var addDevice = function(req, res) {
+	db.insert({
+		name: req.body.name,
+		ip: req.body.ip,
+		mac: req.body.mac,
+		status: false
+	}, function(err, device) {
+		if(err) 			res.status(500);
+		res.json({newDevice: device});
+	});
 }
 
 module.exports = {
 	devices: devices,
 	deviceOn: deviceOn,
 	deviceOff: deviceOff,
-	devicePing: devicePing
+	devicePing: devicePing,
+	addDevice: addDevice,
+	deleteDevice: deleteDevice
 };

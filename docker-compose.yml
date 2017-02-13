@@ -3,5 +3,5 @@ server:
     environment:
       - PORT=8080
     ports:
-      - "8080"
+      - "7001:8080"
     restart: always
