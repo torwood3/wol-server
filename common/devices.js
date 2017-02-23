@@ -37,8 +37,8 @@ var deviceOff =  function(req, res) {
 	console.log("Get off device : " + req.params.id);
 	db.find({_id: req.params.id},function (err, device) {
 		if(err) 			res.status(500);
-
-		var port = device.port || 3000;
+    console.log(device);
+    var port = device.port || 3000;
 		console.log('http://' + device.ip +':'+ port +'/api/poweroff')
 		request
 			.get('http://' + device.ip +':'+ port +'/api/poweroff')
