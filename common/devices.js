@@ -109,6 +109,7 @@ module.exports = {
 setInterval(function() {
 	db.find({}, function (err, devices) {
 		if(err) 			res.status(500);
+		console.log("Devices : " + devices.length);
 		devices.forEach(function(device) {
 			ping.promise.probe(device.ip).then(function (result) {
 				console.log(device.ip + " - " + result.alive);
@@ -118,4 +119,4 @@ setInterval(function() {
 			});
 		});
 	})
-}, 1000 * 60 * 5);
+}, 1000 * 5);
