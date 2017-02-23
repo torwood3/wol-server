@@ -107,14 +107,11 @@ module.exports = {
 setInterval(function() {
 	db.find({}, function (err, devices) {
 		if(err) 			res.status(500);
-		console.log("Devices (" + devices.length +")");
 		devices.forEach(function(device) {
-			console.log(device);
 			tcpp.probe(device.ip, 80, function (err, available) {
 				console.log(device.ip + " - " + available);
 				db.update({ _id: device._id }, { $set: { status: available.toString()} }, function (err, numReplaced) {
 					if(err) 		console.log(device._id + " - ping error");
-					console.log(device._id + " - ping ok");
 				});
 			});
 		});
