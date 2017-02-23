@@ -1,7 +1,8 @@
 server:
     build: .
     environment:
-      - PORT=8080
+      - PORT=7001
     ports:
-      - "7001:8080"
+      - "7001:7001"
     restart: always
+    net: "host"

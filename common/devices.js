@@ -48,16 +48,6 @@ var deviceOff =  function(req, res) {
 					return;
 				}
 				res.end();
-
-				setTimeout(function(){
-					pingDevice(device).then(function (result) {
-						if (result.alive) {
-							var port = device.port || 3000;
-							request.get('http://' + device.ip +':'+ port +'/api/poweroff')
-						}
-					});
-				}, 60 * 1000);
-
 			});
 	})
 }
