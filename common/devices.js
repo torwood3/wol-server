@@ -21,7 +21,7 @@ var deviceOn =  function(req, res) {
 	console.log("Get on device : " + req.params.id);
 	db.find({_id: req.params.id}, function (err, device) {
 		if(err) 			res.status(500);
-		console.log(device);
+    device = device[0];
 		wol.wake(device.mac, function (error) {
 			if (error) {
 				res.json({error: "Magic paquet error"});
@@ -37,7 +37,7 @@ var deviceOff =  function(req, res) {
 	console.log("Get off device : " + req.params.id);
 	db.find({_id: req.params.id},function (err, device) {
 		if(err) 			res.status(500);
-    console.log(device);
+    device = device[0];
     var port = device.port || 3000;
 		console.log('http://' + device.ip +':'+ port +'/api/poweroff')
 		request
