@@ -66,7 +66,7 @@ var devicePing =  function(req, res) {
 	db.find({_id: req.params.id}, function (err, device) {
 		if(err) 			res.status(500);
 
-		tcpp.probe(device.ip, function (err, available) {
+		tcpp.probe(device.ip, 80, function (err, available) {
 			db.update({ _id: req.params.id }, { $set: { status: available.toString()} }, function (err, numReplaced) {
 				if(err) 			res.status(500);
 				res.json({isAlive: available.toString()});
@@ -110,7 +110,7 @@ setInterval(function() {
 		console.log("Devices (" + devices.length +")");
 		devices.forEach(function(device) {
 			console.log(device);
-			tcpp.probe(device.ip, function (err, available) {
+			tcpp.probe(device.ip, 80, function (err, available) {
 				console.log(device.ip + " - " + available);
 				db.update({ _id: device._id }, { $set: { status: available.toString()} }, function (err, numReplaced) {
 					if(err) 		console.log(device._id + " - ping error");
