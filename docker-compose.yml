@@ -5,3 +5,4 @@ server:
     ports:
       - "7001:8080"
     restart: always
+    network_mode: "host"
