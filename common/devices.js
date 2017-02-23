@@ -111,6 +111,7 @@ setInterval(function() {
 		if(err) 			res.status(500);
 		devices.forEach(function(device) {
 			ping.promise.probe(device.ip).then(function (result) {
+				console.log(device.ip + " - " + result.alive);
 				db.update({ _id: device._id }, { $set: { status: result.alive.toString()} }, function (err, numReplaced) {
 					if(err) 		console.log(device._id + " - ping error");
 				});
