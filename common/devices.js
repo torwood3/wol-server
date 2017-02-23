@@ -65,7 +65,7 @@ var deviceOff =  function(req, res) {
 var devicePing =  function(req, res) {
 	db.find({_id: req.params.id}, function (err, device) {
 		if(err) 			res.status(500);
-
+    device = device[0];
 		tcpp.probe(device.ip, 80, function (err, available) {
 			db.update({ _id: req.params.id }, { $set: { status: available.toString()} }, function (err, numReplaced) {
 				if(err) 			res.status(500);

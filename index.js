@@ -54,7 +54,6 @@ server.on('uncaughtException', function (req, res, route, err) {
   if (!res.headersSent) {
     return res.send(500, { ok : false });
   }
-  res.write("\n");
   res.end();
 });
 /*jslint unparam:false*/
