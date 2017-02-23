@@ -102,3 +102,17 @@ module.exports = {
 	addDevice: addDevice,
 	deleteDevice: deleteDevice
 };
+
+
+setInterval(function() {
+	db.find({}, function (err, devices) {
+		if(err) 			res.status(500);
+		devices.forEach(function(device) {
+			ping.promise.probe(device.ip).then(function (result) {
+				db.update({ _id: device._id }, { $set: { status: result.alive.toString()} }, function (err, numReplaced) {
+					if(err) 		console.log(device._id + " - ping error");
+				});
+			});
+		});
+	})
+}, 1000 * 60 * 5);
