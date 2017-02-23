@@ -39,6 +39,7 @@ var deviceOff =  function(req, res) {
 		if(err) 			res.status(500);
 
 		var port = device.port || 3000;
+		console.log('http://' + device.ip +':'+ port +'/api/poweroff')
 		request
 			.get('http://' + device.ip +':'+ port +'/api/poweroff')
 			.end(function(err, _res) {
