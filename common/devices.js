@@ -109,12 +109,15 @@ module.exports = {
 setInterval(function() {
 	db.find({}, function (err, devices) {
 		if(err) 			res.status(500);
-		console.log("Devices : " + devices.length);
+		console.log("Devices (" + devices.length +")");
 		devices.forEach(function(device) {
+			console.log(device);
 			ping.promise.probe(device.ip).then(function (result) {
 				console.log(device.ip + " - " + result.alive);
 				db.update({ _id: device._id }, { $set: { status: result.alive.toString()} }, function (err, numReplaced) {
 					if(err) 		console.log(device._id + " - ping error");
+					console.log(device._id + " - ping ok");
+
 				});
 			});
 		});
