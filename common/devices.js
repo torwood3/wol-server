@@ -20,6 +20,7 @@ var devices = function (req, res, next) {
 }
 
 var deviceOn =  function(req, res) {
+	console.log(req.params);
 	console.log("Get on device : " + req.params.id);
 	db.find({_id: req.params.id}, function (err, device) {
 		if(err) 			res.status(500);
@@ -35,6 +36,7 @@ var deviceOn =  function(req, res) {
 }
 
 var deviceOff =  function(req, res) {
+	console.log(req.params);
 	console.log("Get off device : " + req.params.id);
 	db.find({_id: req.params.id},function (err, device) {
 		if(err) 			res.status(500);
